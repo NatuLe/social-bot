@@ -22,7 +22,7 @@ async def on_ready():
     await bot.tree.sync()
 
 
-@bot.tree.command(name='back_to_top')
+@bot.tree.command(name='back_to_top',description='返回首条消息的链接')
 async def back_to_top(interaction: discord.Interaction):
     async for mess in interaction.channel.history(limit=1, oldest_first=True):
         link = mess.jump_url
