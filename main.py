@@ -13,7 +13,7 @@ load_dotenv(dotenv_path=env_path)
 
 # 从环境变量中获取 TOKEN
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
-TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+
 
 @bot.event
 async def on_ready():
