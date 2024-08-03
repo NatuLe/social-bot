@@ -46,5 +46,19 @@ async def back_to_top(interaction: discord.Interaction):
         link = mess.jump_url
     await interaction.response.send_message(link)
 
+@bot.event
+async def on_reaction_add(reaction,user):
+    embed=discord.Embed(description=f'{user.mention} added {reaction.emoji} [here]({reaction.message.jump_url})',color=	0x008000)
+    guild=bot.get_guild(1252887256327520287)
+    log=guild.get_channel(1269303446230798411)
+    await log.send(embed=embed)
+
+@bot.event
+async def on_reaction_remove(reaction,user):
+    embed=discord.Embed(description=f'{user.mention} removed {reaction.emoji} [here]({reaction.message.jump_url})',color=0xff0000)
+    guild=bot.get_guild(1252887256327520287)
+    log=guild.get_channel(1269303446230798411)
+    await log.send(embed=embed)
+
 
 bot.run(TOKEN)
