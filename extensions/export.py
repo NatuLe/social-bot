@@ -16,6 +16,9 @@ class Export(Extension):
         try:
             if channel.parent_channel.id in allowed_channels_ids:
                 pass
+            else:
+                await ctx.send(embed=Embed(title="Error", description="You cant use this command here!", color=0xff0000),ephemeral=True)
+                return
         except:
             await ctx.send(embed=Embed(title="Error", description="You cant use this command here!", color=0xff0000),ephemeral=True)
             return
