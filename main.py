@@ -18,7 +18,7 @@ TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 @listen(Events.Ready)
 async def on_ready(event):
-    print(f'Logged in as {bot.name} ')
+    print(f'Logged in as {bot.app.name} ')
     print('------')
     
 # b23
