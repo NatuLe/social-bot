@@ -18,7 +18,7 @@ TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 @listen(Events.Ready)
 async def on_ready(event):
-    print(f'Logged in as {bot.user.name} ({bot.user.id})')
+    print(f'Logged in as {bot.name} ')
     print('------')
     
 # b23
@@ -87,5 +87,5 @@ for filename in os.listdir(extensions_dir):
         # Load the extension
         bot.load_extension(module_name)
 
-        
+
 bot.start(TOKEN)
