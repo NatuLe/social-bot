@@ -77,4 +77,15 @@ async def back_to_top(ctx: SlashContext):
     link = last_message.jump_url
     await ctx.respond(content=f'[返回顶部]({link})')
 
+extensions_dir = "extensions"
+
+# Iterate through the files in the extensions directory
+for filename in os.listdir(extensions_dir):
+    if filename.endswith(".py") and filename != "__init__.py":
+        # Construct the module name
+        module_name = f"{extensions_dir}.{filename[:-3]}"
+        # Load the extension
+        bot.load_extension(module_name)
+
+        
 bot.start(TOKEN)
