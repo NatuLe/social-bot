@@ -20,7 +20,7 @@ class Export(commands.Cog):
         
         
         try:
-            if channel.parent_channel.id in allowed_channels_ids:
+            if channel.parent.id in allowed_channels_ids:
                 pass
         except:
             await ctx.followup.send(embed=Embed(title="Error", description="You cant use this command here!", color=0xff0000),ephemeral=True)
