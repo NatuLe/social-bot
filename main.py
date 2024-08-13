@@ -71,9 +71,9 @@ async def on_reaction_remove(event:Events.MessageReactionRemove):
 
 @slash_command(name='back-to-top', description='返回顶部')
 async def back_to_top(ctx: SlashContext):
-    await ctx.defer()
-    async for mess in ctx.channel.history(limit=None):
-        last_message = mess
+    channel = ctx.channel
+    lis = [message async for message in interactions.ChannelHistory(channel=channel,limit=1,after=None)]  # Await and collect messages
+    last_message = lis[-1]  # Get the last message
     link = last_message.jump_url
     await ctx.respond(content=f'[返回顶部]({link})')
 
@@ -89,3 +89,6 @@ for filename in os.listdir(extensions_dir):
 
 
 bot.start(TOKEN)
+
+
+# source myenv/bin/activate
