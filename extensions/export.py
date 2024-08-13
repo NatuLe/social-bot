@@ -1,36 +1,39 @@
-from interactions import Extension, slash_command, SlashContext, Embed, File
-import os
+from discord.ext import commands
+import discord,os
+from discord import Interaction,app_commands,Embed,File
 
-class Export(Extension):
+class Export(commands.Cog):
+    def __init__(self,bot):
+        self.bot=bot
+        
+    
 
-    @slash_command(
+    @app_commands.command(
         name="export_posters_messages",
         description="Export the messages from the original poster of current thread.",
-        scopes=[1268205038417743923],
-    )
-    async def export_posters_messages(self, ctx: SlashContext):
-        await ctx.defer(ephemeral=True)
+        )
+    async def export_posters_messages(self, ctx: Interaction):
+
+        await ctx.response.defer()
+        channel = ctx.channel
         allowed_channels_ids=[1268262603201839235]
         
-        channel = ctx.channel
+        
         try:
             if channel.parent_channel.id in allowed_channels_ids:
                 pass
-            else:
-                await ctx.send(embed=Embed(title="Error", description="You cant use this command here!", color=0xff0000),ephemeral=True)
-                return
         except:
-            await ctx.send(embed=Embed(title="Error", description="You cant use this command here!", color=0xff0000),ephemeral=True)
+            await ctx.followup.send(embed=Embed(title="Error", description="You cant use this command here!", color=0xff0000),ephemeral=True)
             return
         init_message = None
 
         # Get the initial message
-        async for message in channel.history(limit=None):
+        async for message in channel.history(limit=1,oldest_first=True):
             init_message = message
 
         if not init_message:
             embed = Embed(title="Error", description="This thread doesn't have an initial post.", color=0xff0000)
-            await ctx.send(embed=embed, ephemeral=True)
+            await ctx.followup.send(embed=embed, ephemeral=True)
             return
 
         poster = init_message.author
@@ -42,7 +45,7 @@ class Export(Extension):
                 messagesofposter.append(message.content)
 
         messagesofposter = "\n\n".join(reversed(messagesofposter))
-
+        total_characters = len(messagesofposter)
         # Ensure the directory exists
         directory = "./files"
         if not os.path.exists(directory):
@@ -52,11 +55,19 @@ class Export(Extension):
         file_path = os.path.join(directory, f"{channel.name}_by_{poster.display_name}.md")
         with open(file_path, "w+") as f:
             f.write(messagesofposter)
+        
+        # Create and followup.send the success embed
+        try:
+            embed = Embed(
+                title="Export",
+                description=f"Exported {total_characters} characters from {poster.mention} to `{channel.name}_by_{poster.display_name}.md`.",
+                color=0x00ff00
+            )
+            
+            
+            await ctx.followup.send(embed=embed,file=File(fp=file_path))
+        except Exception as e:
+            await ctx.followup.send(f'{e}')
 
-        # Create and send the success embed
-        embed = Embed(
-            title="Export",
-            description=f"Exported {len(messagesofposter)} characters from {poster.mention} to `{channel.name}_by_{poster.display_name}.md`.",
-            color=0x00ff00
-        )
-        await ctx.send(embed=embed, file=File(file_path))
+async def setup(bot):
+    await bot.add_cog(Export(bot))
