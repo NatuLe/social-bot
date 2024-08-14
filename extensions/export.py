@@ -42,7 +42,7 @@ class Export(commands.Cog):
         # Collect all messages from the poster
         async for message in channel.history(limit=None):
             if message.author == poster:
-                chat=await self.replace_mentions_with_displaynames(message.content)
+                chat=await self.replace_mentions_with_displaynames(message)
                 messagesofposter.append(chat)
 
         messagesofposter = "\n\n".join(reversed(messagesofposter))
