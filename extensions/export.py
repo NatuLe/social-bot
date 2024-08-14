@@ -1,5 +1,5 @@
 from discord.ext import commands
-import discord,os
+import discord,os,re
 from discord import Interaction,app_commands,Embed,File
 
 class Export(commands.Cog):
@@ -42,7 +42,8 @@ class Export(commands.Cog):
         # Collect all messages from the poster
         async for message in channel.history(limit=None):
             if message.author == poster:
-                messagesofposter.append(message.content)
+                chat=await self.replace_mentions_with_displaynames(message.content)
+                messagesofposter.append(chat)
 
         messagesofposter = "\n\n".join(reversed(messagesofposter))
         total_characters = len(messagesofposter)
@@ -68,6 +69,27 @@ class Export(commands.Cog):
             await ctx.followup.send(embed=embed,file=File(fp=file_path))
         except Exception as e:
             await ctx.followup.send(f'{e}')
+
+    async def replace_mentions_with_displaynames(self, message: discord.Message):
+    # Regular expression to match mentions like <@user_id>
+        mention_pattern = r'<@!?(\d+)>'
+    
+    # Find all mentions in the message content
+        mentions = re.findall(mention_pattern, message.content)
+    
+    # Start with the original content
+        new_content = message.content
+    
+        for user_id in mentions:
+        # Fetch the User object
+            try:
+                user = await message.guild.fetch_member(int(user_id))
+        
+        # Replace the mention with the user's display name
+                new_content = re.sub(f'<@!?{user_id}>', user.display_name, new_content)
+            except:
+                new_content = re.sub(f'<@!?{user_id}>','--', new_content)
+        return new_content
 
 async def setup(bot):
     await bot.add_cog(Export(bot))
