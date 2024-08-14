@@ -87,8 +87,10 @@ class Export(commands.Cog):
         
         # Replace the mention with the user's display name
                 new_content = re.sub(f'<@!?{user_id}>', user.display_name, new_content)
+                continue
             except:
                 new_content = re.sub(f'<@!?{user_id}>','--', new_content)
+                continue
         return new_content
 
 async def setup(bot):
